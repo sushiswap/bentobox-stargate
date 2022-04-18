@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "./interfaces/IBentoBoxMinimal.sol";
 import "./interfaces/IStargateRouter.sol";
 import "./interfaces/IStargateReceiver.sol";
+import "./utils/BoringBatchable.sol";
 
-contract BentoboxBridgeStargate is IStargateReceiver {
+contract BentoboxBridgeStargate is IStargateReceiver, BoringBatchable {
     struct BridgeParams {
         uint16 dstChainId;
         address token;
