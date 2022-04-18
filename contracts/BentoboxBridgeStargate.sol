@@ -94,6 +94,7 @@ contract BentoboxBridgeStargate is
         uint256 amountLD,
         bytes memory payload
     ) external override {
+        // call who safe?
         (bool toBento, address to) = abi.decode(payload, (bool, address));
         if (toBento) {
             IERC20(_token).transfer(address(bentoBox), amountLD);
