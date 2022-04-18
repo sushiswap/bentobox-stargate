@@ -2,26 +2,13 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "./interfaces/IBentoBoxMinimal.sol";
-import "./interfaces/IStargateRouter.sol";
-import "./interfaces/IStargateReceiver.sol";
-import "./utils/BoringBatchable.sol";
+import "./interfaces/IBentoboxBridgeStargate.sol";
 
-contract BentoboxBridgeStargate is IStargateReceiver, BoringBatchable {
-    struct BridgeParams {
-        uint16 dstChainId;
-        address token;
-        uint256 srcPoolId;
-        uint256 dstPoolId;
-        uint256 amount;
-        uint256 amountMin;
-        address receiver;
-        address to;
-        bool fromBento;
-        bool toBento;
-    }
-
+contract BentoboxBridgeStargate is
+    IBentoboxBridgeStargate,
+    IStargateReceiver,
+    BoringBatchable
+{
     IBentoBoxMinimal public immutable bentoBox;
     IStargateRouter public immutable stargateRouter;
 
@@ -37,7 +24,7 @@ contract BentoboxBridgeStargate is IStargateReceiver, BoringBatchable {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external {
+    ) external override {
         bentoBox.setMasterContractApproval(
             user,
             address(this),
@@ -48,11 +35,15 @@ contract BentoboxBridgeStargate is IStargateReceiver, BoringBatchable {
         );
     }
 
-    function approveToStargateRouter(IERC20 token) external {
+    function approveToStargateRouter(IERC20 token) external override {
         token.approve(address(stargateRouter), type(uint256).max);
     }
 
-    function teleport(BridgeParams memory bridgeParams) external payable {
+    function teleport(BridgeParams memory bridgeParams)
+        external
+        payable
+        override
+    {
         if (bridgeParams.fromBento) {
             bentoBox.withdraw(
                 bridgeParams.token,
@@ -89,6 +80,8 @@ contract BentoboxBridgeStargate is IStargateReceiver, BoringBatchable {
             abi.encodePacked(bridgeParams.receiver),
             payload
         );
+
+        emit Teleported(msg.sender, bridgeParams.token, bridgeParams.amount);
     }
 
     function sgReceive(
@@ -106,5 +99,7 @@ contract BentoboxBridgeStargate is IStargateReceiver, BoringBatchable {
         } else {
             IERC20(_token).transfer(to, amountLD);
         }
+
+        emit Received(to, _token, amountLD);
     }
 }
