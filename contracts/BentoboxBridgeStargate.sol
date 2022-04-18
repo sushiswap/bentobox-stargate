@@ -4,6 +4,8 @@ pragma solidity 0.8.11;
 
 import "./interfaces/IBentoboxBridgeStargate.sol";
 
+// TODO: Add Dust support
+
 contract BentoboxBridgeStargate is
     IBentoboxBridgeStargate,
     IStargateReceiver,
