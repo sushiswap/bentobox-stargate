@@ -30,6 +30,23 @@ contract BentoboxBridgeStargate is IStargateReceiver {
         _bentoBox.registerProtocol();
     }
 
+    function setBentoBoxApproval(
+        address user,
+        bool approved,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external {
+        bentoBox.setMasterContractApproval(
+            user,
+            address(this),
+            approved,
+            v,
+            r,
+            s
+        );
+    }
+
     function approveToStargateRouter(IERC20 token) external {
         token.approve(address(stargateRouter), type(uint256).max);
     }
