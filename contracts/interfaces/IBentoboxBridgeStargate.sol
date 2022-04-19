@@ -28,6 +28,7 @@ interface IBentoboxBridgeStargate {
         uint256 dstPoolId;
         uint256 amount;
         uint256 amountMin;
+        uint256 dustAmount;
         address receiver;
         address to;
         bool fromBento;

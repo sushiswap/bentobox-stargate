@@ -4,8 +4,6 @@ pragma solidity 0.8.11;
 
 import "./interfaces/IBentoboxBridgeStargate.sol";
 
-// TODO: Add Dust support
-
 contract BentoboxBridgeStargate is
     IBentoboxBridgeStargate,
     IStargateReceiver,
@@ -76,7 +74,7 @@ contract BentoboxBridgeStargate is
             bridgeParams.amountMin,
             IStargateRouter.lzTxObj(
                 500000,
-                0,
+                bridgeParams.dustAmount,
                 abi.encodePacked(bridgeParams.receiver)
             ),
             abi.encodePacked(bridgeParams.receiver),
@@ -94,7 +92,10 @@ contract BentoboxBridgeStargate is
         uint256 amountLD,
         bytes memory payload
     ) external override {
-        // call who safe?
+        require(
+            msg.sender == address(stargateRouter),
+            "Caller not Stargate Router"
+        );
         (bool toBento, address to) = abi.decode(payload, (bool, address));
         if (toBento) {
             IERC20(_token).transfer(address(bentoBox), amountLD);
