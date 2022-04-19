@@ -73,7 +73,7 @@ contract BentoboxBridgeStargate is
             bridgeParams.amount,
             bridgeParams.amountMin,
             IStargateRouter.lzTxObj(
-                500000,
+                500000, // works with 100k as well
                 bridgeParams.dustAmount,
                 abi.encodePacked(bridgeParams.receiver)
             ),
@@ -104,6 +104,11 @@ contract BentoboxBridgeStargate is
             IERC20(_token).transfer(to, amountLD);
         }
 
+        if (address(this).balance > 0)
+            payable(to).transfer(address(this).balance);
+
         emit Received(to, _token, amountLD);
     }
+
+    receive() external payable {}
 }
