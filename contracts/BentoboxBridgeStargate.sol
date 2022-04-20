@@ -73,7 +73,7 @@ contract BentoboxBridgeStargate is
             bridgeParams.amount,
             bridgeParams.amountMin,
             IStargateRouter.lzTxObj(
-                500000, // works with 100k as well
+                bridgeParams.gas, // works with 100k as well ~ 500k
                 bridgeParams.dustAmount,
                 abi.encodePacked(bridgeParams.receiver)
             ),

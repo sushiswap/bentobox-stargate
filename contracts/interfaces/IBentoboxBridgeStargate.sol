@@ -33,6 +33,7 @@ interface IBentoboxBridgeStargate {
         address to;
         bool fromBento;
         bool toBento;
+        uint256 gas;
     }
 
     event Teleported(
